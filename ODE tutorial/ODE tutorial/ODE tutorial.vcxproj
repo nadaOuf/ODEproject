@@ -75,7 +75,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>D:\program downloads\ode-0.13\lib\DebugDoubleDLL\drawstuffd.lib;D:\program downloads\ode-0.13\lib\DebugDoubleDLL\ode_doubled.lib;user32.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\lib\DebugDoubleDLL\drawstuffd.lib;..\lib\DebugDoubleDLL\ode_doubled.lib;user32.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
