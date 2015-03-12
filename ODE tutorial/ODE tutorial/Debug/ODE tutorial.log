@@ -1,0 +1,50 @@
+﻿Build started 3/12/2015 11:32:18 AM.
+     1>Project "D:\Upenn Projects\Advance Computer Graphics\ODE tutorial\ODE tutorial\ODE tutorial.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\ODE tutorial.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"D:\Upenn Projects\Advance Computer Graphics\ODE tutorial\include" /I"D:\program downloads\ode-0.13\ode\src" /I"D:\program downloads\ode-0.13\include" /ZI /nologo /W3 /WX- /Od /Oy- /D _MT /D _DEBUG /D dIDEDOUBLE /D CCD_IDEDOUBLE /D WIN32 /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Simulation.cpp
+         Simulation.cpp
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(231): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(231): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(231): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(232): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(232): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(249): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(249): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(254): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(254): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(263): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(264): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(475): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(476): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(477): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(479): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(480): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(481): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(493): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(494): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(507): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(508): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(509): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>d:\upenn projects\advance computer graphics\ode tutorial\ode tutorial\simulation.cpp(510): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Upenn Projects\Advance Computer Graphics\ODE tutorial\Debug\ODE tutorial.exe" /NOLOGO /LIBPATH:"D:\program downloads\ode-0.13\lib" "D:\program downloads\ode-0.13\lib\DebugDoubleDLL\drawstuffd.lib" "D:\program downloads\ode-0.13\lib\DebugDoubleDLL\ode_doubled.lib" user32.lib winmm.lib gdi32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\ODE tutorial.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\Upenn Projects\Advance Computer Graphics\ODE tutorial\Debug\ODE tutorial.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Upenn Projects\Advance Computer Graphics\ODE tutorial\Debug\ODE tutorial.lib" /MACHINE:X86 Debug\AbstractSkeleton.obj
+         Debug\Controller.obj
+         Debug\FileReader.obj
+         Debug\Gait.obj
+         Debug\Simulation.obj
+         Debug\Spline.obj
+         Debug\Trajectories.obj
+         LINK : D:\Upenn Projects\Advance Computer Graphics\ODE tutorial\Debug\ODE tutorial.exe not found or not built by the last incremental link; performing full link
+         ODE tutorial.vcxproj -> D:\Upenn Projects\Advance Computer Graphics\ODE tutorial\Debug\ODE tutorial.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"D:\Upenn Projects\Advance Computer Graphics\ODE tutorial\Debug\ODE tutorial.exe;#1" /manifest "Debug\ODE tutorial.exe.intermediate.manifest"
+       FinalizeBuildStatus:
+         Deleting file "Debug\ODE tutorial.unsuccessfulbuild".
+         Touching "Debug\ODE tutorial.lastbuildstate".
+     1>Done Building Project "D:\Upenn Projects\Advance Computer Graphics\ODE tutorial\ODE tutorial\ODE tutorial.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.84

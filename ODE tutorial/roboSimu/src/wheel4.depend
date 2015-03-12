@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1162518216 source:c:\ode-0.10.1\drawstuff\src\resources.rc
+	"resource.h"
+	"winresrc.h"
+
+989299112 c:\ode-0.10.1\drawstuff\src\resource.h
+

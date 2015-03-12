@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="roboSimu">
+		<Project filename="amotor.cbp" />
+		<Project filename="arm1.cbp" />
+		<Project filename="arm2.cbp" />
+		<Project filename="arm3.cbp" />
+		<Project filename="bounce.cbp" />
+		<Project filename="hello.cbp" />
+		<Project filename="hopper.cbp" />
+		<Project filename="hopper2.cbp" />
+		<Project filename="hopper3.cbp" />
+		<Project filename="legged.cbp" active="1" />
+		<Project filename="monoBot.cbp" />
+		<Project filename="omni.cbp" />
+		<Project filename="pk.cbp" />
+		<Project filename="sensor4.cbp" />
+		<Project filename="slope.cbp" />
+		<Project filename="wheel1.cbp" />
+		<Project filename="wheel2.cbp" />
+		<Project filename="wheel4.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

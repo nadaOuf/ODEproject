@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="wheel2" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="DebugLib">
+				<Option output="../DebugLib/wheel2.exe" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/wheel2/DebugLib" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-D_CRT_SECURE_NO_DEPRECATE" />
+					<Add option="-DWIN32" />
+					<Add option="-DODE_LIB" />
+					<Add option="-DdDOUBLE" />
+					<Add directory="../../include" />
+					<Add directory="../../ode/src" />
+				</Compiler>
+				<Linker>
+					<Add directory="../DebugLib" />
+					<Add directory="../../lib/DebugDoubleLib" />
+					<Add library="ode_doubled" />
+					<Add library="drawstuffd" />
+					<Add library="user32" />
+					<Add library="winmm" />
+					<Add library="gdi32" />
+					<Add library="opengl32" />
+					<Add library="glu32" />
+					<Add library="ode_doubled" />
+					<Add library="drawstuffd" />
+				</Linker>
+				<ResourceCompiler>
+					<Add directory="../../include" />
+					<Add directory="../../ode/src" />
+				</ResourceCompiler>
+			</Target>
+			<Target title="DebugDLL">
+				<Option output="../DebugDLL/wheel2.exe" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/wheel2/DebugDLL" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-D_CRT_SECURE_NO_DEPRECATE" />
+					<Add option="-DWIN32" />
+					<Add option="-DdDOUBLE" />
+					<Add option="-DODE_DLL" />
+					<Add directory="../../include" />
+					<Add directory="../../ode/src" />
+				</Compiler>
+				<Linker>
+					<Add directory="../DebugDLL" />
+					<Add directory="../../lib/DebugDoubleDLL" />
+					<Add library="ode_doubled" />
+					<Add library="drawstuffd" />
+					<Add library="user32" />
+					<Add library="winmm" />
+					<Add library="gdi32" />
+					<Add library="opengl32" />
+					<Add library="glu32" />
+					<Add library="ode_doubled" />
+					<Add library="drawstuffd" />
+				</Linker>
+				<ResourceCompiler>
+					<Add directory="../../include" />
+					<Add directory="../../ode/src" />
+				</ResourceCompiler>
+			</Target>
+		</Build>
+		<Unit filename="../../roboSimu/src/wheel2.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="DebugLib" />
+			<Option target="DebugDLL" />
+		</Unit>
+		<Unit filename="../../drawstuff/src/resources.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="DebugLib" />
+			<Option target="DebugDLL" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>
