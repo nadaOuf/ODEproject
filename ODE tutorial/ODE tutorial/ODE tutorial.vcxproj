@@ -69,12 +69,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>D:\Upenn Projects\Advance Computer Graphics\ODE tutorial\include;D:\program downloads\ode-0.13\ode\src;D:\program downloads\ode-0.13\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MT;_DEBUG;dIDEDOUBLE;CCD_IDEDOUBLE;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\program downloads\ode-0.13\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>D:\program downloads\ode-0.13\lib\DebugDoubleDLL\drawstuffd.lib;D:\program downloads\ode-0.13\lib\DebugDoubleDLL\ode_doubled.lib;user32.lib;winmm.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
