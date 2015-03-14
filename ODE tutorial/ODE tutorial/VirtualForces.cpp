@@ -26,13 +26,14 @@ void VirtualForces::GravityCompensation(Link* start, Link* end)
 		glm::vec3 tmpV = pGlobal - currentLink->GetParent()->GetGlobalPosition();
 		glm::vec3 torque = glm::cross(tmpV, gravity);
 
-
+		currentLink->AddTorque(torque);
 		currentLink = currentLink->GetParent();
 	}
 
 	if(end != NULL)
 	{
 		glm::vec3 tmpV = pGlobal - currentLink->GetParent()->GetGlobalPosition();
-		glm::vec3 tmpT = glm::cross(tmpV, gravity);
+		glm::vec3 torque = glm::cross(tmpV, gravity);
+		currentLink->AddTorque(torque);
 	}
 }

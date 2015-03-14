@@ -23,6 +23,8 @@ class Link
 		glm::mat4 GetTransformMatrix();
 		glm::vec3 GetGlobalPosition();
 
+		void AddTorque(glm::vec3 torque);
+
 		dBodyID body;
 		dGeomID geom;
 		dJointID joint;
@@ -36,5 +38,7 @@ class Link
 	private:
 		Link* parent_;
 		std::vector<Link*> children_;
+
+		glm::vec3 torque_;
 };
 

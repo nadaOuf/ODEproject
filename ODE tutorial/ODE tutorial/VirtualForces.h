@@ -9,7 +9,5 @@ public:
 	~VirtualForces(void);
 
 	void GravityCompensation(Link* start, Link* end);
-
-	std::vector<glm::vec3> torques;
 };
 

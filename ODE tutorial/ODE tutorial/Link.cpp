@@ -53,7 +53,6 @@ void Link::RotateBy(glm::vec3 axis, float angleRad)
 
 }
 
-
 glm::mat4 Link::GetTransformMatrix()
 {
 	return glm::mat4();
@@ -61,4 +60,9 @@ glm::mat4 Link::GetTransformMatrix()
 glm::vec3 Link::GetGlobalPosition()
 {
 	return glm::vec3();
+}
+
+void Link::AddTorque(glm::vec3 torque)
+{
+	torque_ += torque;
 }

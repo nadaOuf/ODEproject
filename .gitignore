@@ -51,3 +51,12 @@ Temporary Items
 ODE tutorial/ODE tutorial.sdf
 *.ipch
 ODE tutorial/ODE tutorial.sdf
+*.sdf
+*.suo
+*.sdf
+*.tlog
+*.obj
+*.lastbuildstate
+*.cache
+*.idb
+*.pdb

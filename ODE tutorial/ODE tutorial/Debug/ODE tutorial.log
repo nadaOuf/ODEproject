@@ -1,17 +1,66 @@
-﻿Build started 3/14/2015 2:49:51 PM.
-     1>Project "D:\Upenn Projects\Advance Computer Graphics\ODEproject\ODE tutorial\ODE tutorial\ODE tutorial.vcxproj" on node 2 (build target(s)).
+﻿Build started 3/14/2015 3:25:35 PM.
+     1>Project "C:\ODEproject\ODE tutorial\ODE tutorial\ODE tutorial.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\ODE tutorial.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         All outputs are up-to-date.
-       Link:
-         All outputs are up-to-date.
-         ODE tutorial.vcxproj -> D:\Upenn Projects\Advance Computer Graphics\ODEproject\ODE tutorial\Debug\ODE tutorial.exe
-       FinalizeBuildStatus:
-         Deleting file "Debug\ODE tutorial.unsuccessfulbuild".
-         Touching "Debug\ODE tutorial.lastbuildstate".
-     1>Done Building Project "D:\Upenn Projects\Advance Computer Graphics\ODEproject\ODE tutorial\ODE tutorial\ODE tutorial.vcxproj" (build target(s)).
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\include /ZI /nologo /W3 /WX- /Od /Oy- /D _MT /D _DEBUG /D dIDEDOUBLE /D CCD_IDEDOUBLE /D WIN32 /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt AbstractSkeleton.cpp Controller.cpp FileReader.cpp Gait.cpp IKChain.cpp Link.cpp Simulation.cpp Spline.cpp Trajectories.cpp VirtualForces.cpp
+         VirtualForces.cpp
+         Trajectories.cpp
+         Spline.cpp
+     1>c:\odeproject\ode tutorial\ode tutorial\spline.cpp(23): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\spline.cpp(99): warning C4018: '<' : signed/unsigned mismatch
+         Simulation.cpp
+     1>c:\odeproject\ode tutorial\ode tutorial\abstractskeleton.h(20): error C2535: 'void AbstractSkeleton::setSkeletonRoot(Link *)' : member function already defined or declared
+                 c:\odeproject\ode tutorial\ode tutorial\abstractskeleton.h(17) : see declaration of 'AbstractSkeleton::setSkeletonRoot'
+     1>c:\odeproject\ode tutorial\ode tutorial\abstractskeleton.h(21): error C2535: 'Link *AbstractSkeleton::getSkeletonRoot(void)' : member function already defined or declared
+                 c:\odeproject\ode tutorial\ode tutorial\abstractskeleton.h(18) : see declaration of 'AbstractSkeleton::getSkeletonRoot'
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(240): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(240): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(240): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(241): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(241): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(262): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(262): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(269): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(269): warning C4244: 'argument' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(278): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(279): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(358): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(359): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(360): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(362): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(363): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(364): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(376): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(377): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(390): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(391): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(392): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\simulation.cpp(393): warning C4244: '=' : conversion from 'dReal' to 'float', possible loss of data
+         Link.cpp
+     1>c:\odeproject\ode tutorial\ode tutorial\link.cpp(28): warning C4018: '>' : signed/unsigned mismatch
+     1>c:\odeproject\ode tutorial\ode tutorial\link.cpp(45): warning C4244: 'argument' : conversion from 'const dReal' to 'const float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\link.cpp(45): warning C4244: 'argument' : conversion from 'const dReal' to 'const float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\link.cpp(45): warning C4244: 'argument' : conversion from 'const dReal' to 'const float', possible loss of data
+     1>c:\odeproject\ode tutorial\ode tutorial\link.cpp(45): warning C4244: 'argument' : conversion from 'const dReal' to 'const float', possible loss of data
+         GLM: angleAxis function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+         GLM: pitch function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+         GLM: yaw function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+         GLM: roll function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+         IKChain.cpp
+         Gait.cpp
+         FileReader.cpp
+         Controller.cpp
+         AbstractSkeleton.cpp
+     1>c:\odeproject\ode tutorial\ode tutorial\abstractskeleton.h(20): error C2535: 'void AbstractSkeleton::setSkeletonRoot(Link *)' : member function already defined or declared
+                 c:\odeproject\ode tutorial\ode tutorial\abstractskeleton.h(17) : see declaration of 'AbstractSkeleton::setSkeletonRoot'
+     1>c:\odeproject\ode tutorial\ode tutorial\abstractskeleton.h(21): error C2535: 'Link *AbstractSkeleton::getSkeletonRoot(void)' : member function already defined or declared
+                 c:\odeproject\ode tutorial\ode tutorial\abstractskeleton.h(18) : see declaration of 'AbstractSkeleton::getSkeletonRoot'
+         Generating Code...
+     1>c:\odeproject\ode tutorial\ode tutorial\link.cpp(30): warning C4715: 'Link::GetChild' : not all control paths return a value
+     1>c:\odeproject\ode tutorial\ode tutorial\link.cpp(36): warning C4715: 'Link::GetChild' : not all control paths return a value
+     1>Done Building Project "C:\ODEproject\ODE tutorial\ODE tutorial\ODE tutorial.vcxproj" (build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:00.05
+Time Elapsed 00:00:10.06
