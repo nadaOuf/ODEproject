@@ -42,8 +42,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-.pch
-.sln
-.sdf
-.suo
-.exe
+*.pch
+*.sln
+*.sdf
+*.suo
+*.exe
