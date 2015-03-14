@@ -43,7 +43,11 @@ Temporary Items
 .apdisk
 
 *.pch
+*.ipch
 *.sln
 *.sdf
 *.suo
 *.exe
+ODE tutorial/ODE tutorial.sdf
+*.ipch
+ODE tutorial/ODE tutorial.sdf

@@ -6,15 +6,31 @@ enum LEG_MODE { stance = 0, swing };
 
 class LegFrame
 {
-	public:
+public:
 		LegFrame(void);
+		LegFrame(IKChain* left, IKChain* right)
+		{
+			m_left_leg = left;
+			m_right_leg = right;
+		};
+		Link* getLeftRoot()
+		{
+			return m_left_leg->getRoot();
+		}
+
+		Link* getRightRoot()
+		{
+			return m_right_leg->getRoot();
+		}
 		~LegFrame(void);
 
-		IKChain* left_leg;
-		IKChain* right_leg;
+private:
 
-		LEG_MODE left_leg_mode;
-		LEG_MODE right_leg_mode;
+		IKChain* m_left_leg;
+		IKChain* m_right_leg;
+
+		LEG_MODE m_left_leg_mode;
+		LEG_MODE m_right_leg_mode;
 
 };
 

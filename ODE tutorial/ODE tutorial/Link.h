@@ -7,6 +7,7 @@
 class Link
 {
 	public:
+		Link();
 		Link(Link* parent);
 		~Link(void);
 		
@@ -22,14 +23,15 @@ class Link
 		glm::mat4 GetTransformMatrix();
 		glm::vec3 GetGlobalPosition();
 
-		dBodyID bodyID;
-		dGeomID geomID;
-		dJointID jointID;
-		dJointID motorID;
+		dBodyID body;
+		dGeomID geom;
+		dJointID joint;
+		dJointID aMotor;
 		dReal mass, radius, length, totalLength;
 		dReal cX, cY, cZ; //C.M. for the link
 		dReal tX, tY, tZ; //Target angles for the joint
 		Controller* PD;
+		int jointID;
 
 	private:
 		Link* parent_;

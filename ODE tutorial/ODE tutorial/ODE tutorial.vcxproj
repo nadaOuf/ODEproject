@@ -28,6 +28,7 @@
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Trajectories.cpp" />
+    <ClCompile Include="VirtualForces.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractSkeleton.h" />
@@ -40,6 +41,7 @@
     <ClInclude Include="Link.h" />
     <ClInclude Include="Spline.h" />
     <ClInclude Include="Trajectories.h" />
+    <ClInclude Include="VirtualForces.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2747013C-CAA3-4C5A-A2B9-A0EF9D572D86}</ProjectGuid>

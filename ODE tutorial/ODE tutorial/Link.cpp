@@ -1,5 +1,10 @@
 #include "Link.h"
 
+Link::Link()
+{
+	parent_ = NULL;
+}
+
 Link::Link(Link* parent)
 {
 	parent_ = parent;
@@ -20,7 +25,7 @@ int Link::AddChild(Link* child)
 
 Link* Link::GetChild(int index)
 {
-	if(children_.size() > index && index > 0)
+	if(children_.size() > index && index >= 0)
 		return children_[index];
 }
 	
@@ -36,7 +41,7 @@ void Link::RotateBy(glm::vec3 axis, float angleRad)
 {
 	glm::quat rot = glm::angleAxis(angleRad,axis);
 
-	const dReal *current = dBodyGetQuaternion(this->bodyID);
+	const dReal *current = dBodyGetQuaternion(this->body);
 	glm::quat orientation(current[0], current[1], current[2], current[3]);
 
 	orientation = rot * orientation;
@@ -46,4 +51,14 @@ void Link::RotateBy(glm::vec3 axis, float angleRad)
 	tY = target_angle.y;
 	tZ = target_angle.z;
 
+}
+
+
+glm::mat4 Link::GetTransformMatrix()
+{
+	return glm::mat4();
+}
+glm::vec3 Link::GetGlobalPosition()
+{
+	return glm::vec3();
 }

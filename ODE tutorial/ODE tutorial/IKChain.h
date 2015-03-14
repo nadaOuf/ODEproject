@@ -17,6 +17,11 @@ class IKChain
 		IKChain(Link* begin, Link* end, int depth);
 		~IKChain();
 
+		Link* getRoot()
+		{
+			return root_;
+		};
+
 		void SolveIK(glm::vec3 goal) const;
 
 	private:

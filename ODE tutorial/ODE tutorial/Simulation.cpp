@@ -22,7 +22,7 @@ dJointGroupID contactgroup;
 //Functions for drawing
 dsFunctions fn;
 
-Link leg[LEG_NUM][LINK_NUM], torso, head;
+Link* root;
 
 dReal THETA[LEG_NUM][LINK_NUM] = {{0},{0},{0},{0}};
 
@@ -33,7 +33,7 @@ AbstractSkeleton* skeleton;
 Trajectories* trajectories;
 int step = 0;
 
-void setupSkeleton ()
+void setupSkeleton()
 {
 	dMass mass;
 	dReal height = 0.47;
@@ -41,6 +41,8 @@ void setupSkeleton ()
 	dReal linkLength = (height-(linkRadius + 0.01))/2.0 - linkRadius;
 	dReal linkMass = 1;
 
+	root  = new Link(NULL);
+	Link torso = *root;
 	//Set up the torso
 	torso.body = dBodyCreate(world);
 	torso.radius = 0.2;
@@ -62,48 +64,57 @@ void setupSkeleton ()
 	torso.geom = dCreateCapsule(space, torso.radius, torso.length);
 	dGeomSetBody(torso.geom, torso.body);
 
+	torso.AddChild(new Link(root));
+	torso.AddChild(new Link(root));
+	torso.AddChild(new Link(root));
+	torso.AddChild(new Link(root));
+
 	//Set up the links
 	int altX = -1;
 	int altY = -1;
+	Link* parent;
 	for (int i = 0; i < LEG_NUM; ++i)
 	{
+		parent = torso.GetChild(i);
 		dReal x = torso.length/2.0;
 		dReal y = torso.radius;
 		for (int j = 0; j < LINK_NUM; ++j)
 		{
-			leg[i][j].body = dBodyCreate(world);
-			leg[i][j].radius = linkRadius;
+			Link* link = new Link(parent);
+			link->body = dBodyCreate(world);
+			link->radius = linkRadius;
 			if(j == LINK_NUM - 1)
-				leg[i][j].length = 0.03;
+				link->length = 0.03;
 			else
-				leg[i][j].length = linkLength;
+				link->length = linkLength;
 
-			leg[i][j].mass = linkMass;
+			link->mass = linkMass;
 			dMassSetZero(&mass);
 			
 			if (j == LINK_NUM - 1)
 			{
-				leg[i][j].totalLength = leg[i][j].length + linkRadius;
-				dMassSetBoxTotal(&mass, leg[i][j].mass, leg[i][j].radius*2, leg[i][j].radius*2, leg[i][j].length);
-				leg[i][j].geom = dCreateBox(space, leg[i][j].radius*2, leg[i][j].radius*2, leg[i][j].length);
+				link->totalLength = link->length + linkRadius;
+				dMassSetBoxTotal(&mass, link->mass, link->radius*2, link->radius*2, link->length);
+				link->geom = dCreateBox(space, link->radius*2, link->radius*2, link->length);
 				//x += leg[i][j].radius*altX;
 			}
 			else
 			{
-				leg[i][j].totalLength = leg[i][j].length + linkRadius;							
-				dMassSetCapsuleTotal(&mass, leg[i][j].mass, 3, leg[i][j].radius, leg[i][j].length);
-				leg[i][j].geom = dCreateCapsule(space, leg[i][j].radius, leg[i][j].length);
+				link->totalLength = link->length + linkRadius;							
+				dMassSetCapsuleTotal(&mass, link->mass, 3, link->radius, link->length);
+				link->geom = dCreateCapsule(space, link->radius, link->length);
 			}
 
-			dBodySetMass(leg[i][j].body, &mass);
-			dGeomSetBody(leg[i][j].geom, leg[i][j].body);
+			dBodySetMass(link->body, &mass);
+			dGeomSetBody(link->geom, link->body);
 
 			//Setting the position of the link
-			leg[i][j].cX = x*altX;
-			leg[i][j].cY = y*altY;
-			leg[i][j].cZ = height - leg[i][j].totalLength/2.0 - (j > 0? leg[i][j-1].totalLength *j : 0);
+			link->cX = x*altX;
+			link->cY = y*altY;
+			link->cZ = height - link->totalLength/2.0 - (j > 0? link->totalLength *j : 0);
 			
-			dBodySetPosition(leg[i][j].body, leg[i][j].cX, leg[i][j].cY, leg[i][j].cZ);			
+			dBodySetPosition(link->body, link->cX, link->cY, link->cZ);	
+			parent = link;
 		}
 
 		if (i == 1)
@@ -114,6 +125,8 @@ void setupSkeleton ()
 			altY = -1;
 	}
 
+	torso.AddChild(new Link(root));
+	Link head = torso.GetChild(4);
 	//Add the head
 	head.body = dBodyCreate(world);
 	head.length = 0.3;
@@ -144,34 +157,38 @@ void setupSkeleton ()
 	dReal fmax = 10.0f;
 	dReal cfm = 1e-5;
 	dReal erp = 0.8f;
+	Link* link;
 	//Attach the link joints
 	for(int i = 0; i < LEG_NUM; ++i)
 	{
+		parent = torso.GetChild(i);
 		for(int j = 0; j < JOINT_NUM; ++j)
 		{
+			link = parent;
+			
 			switch(j)
 			{
 				case 0: //Create a ball-in-socket joint and connect to the torso
-					leg[i][j].joint = dJointCreateBall(world, 0);
-					dJointAttach(leg[i][j].joint, leg[i][j].body, torso.body);
-					dJointSetBallAnchor(leg[i][j].joint, leg[i][j].cX, leg[i][j].cY, leg[i][j].cZ + leg[i][j].totalLength/2.0);
+					link->joint = dJointCreateBall(world, 0);
+					dJointAttach(link->joint, link->body, link->GetParent()->body);
+					dJointSetBallAnchor(link->joint, link->cX, link->cY, link->cZ + link->totalLength/2.0);
 
 					//For a ball-in-socket joint create a AMotor to control it
-					leg[i][j].aMotor = dJointCreateAMotor(world, 0);
-					dJointAttach(leg[i][j].aMotor, leg[i][j].body, torso.body);
-					dJointSetAMotorMode(leg[i][j].aMotor, dAMotorUser);
-					dJointSetAMotorNumAxes(leg[i][j].aMotor, 3);
-					dJointSetAMotorAxis(leg[i][j].aMotor, 0, 1,  0, 0, 1);
-					dJointSetAMotorAxis(leg[i][j].aMotor, 1, 1,  1, 0, 0);
-					dJointSetAMotorAxis(leg[i][j].aMotor, 2, 1,  0, 1, 0);
+					link->aMotor = dJointCreateAMotor(world, 0);
+					dJointAttach(link->aMotor, link->body, link->GetParent()->body);
+					dJointSetAMotorMode(link->aMotor, dAMotorUser);
+					dJointSetAMotorNumAxes(link->aMotor, 3);
+					dJointSetAMotorAxis(link->aMotor, 0, 1,  0, 0, 1);
+					dJointSetAMotorAxis(link->aMotor, 1, 1,  1, 0, 0);
+					dJointSetAMotorAxis(link->aMotor, 2, 1,  0, 1, 0);
 
-					dJointSetAMotorParam(leg[i][j].aMotor, dParamLoStop,  -stop);
-					dJointSetAMotorParam(leg[i][j].aMotor, dParamHiStop,   stop);
-					dJointSetAMotorParam(leg[i][j].aMotor, dParamVel,      0);
-					dJointSetAMotorParam(leg[i][j].aMotor, dParamFMax,     fmax);
-					dJointSetAMotorParam(leg[i][j].aMotor, dParamBounce,   0);
-					dJointSetAMotorParam(leg[i][j].aMotor, dParamStopCFM,  cfm);
-					dJointSetAMotorParam(leg[i][j].aMotor, dParamStopERP,  erp);
+					dJointSetAMotorParam(link->aMotor, dParamLoStop,  -stop);
+					dJointSetAMotorParam(link->aMotor, dParamHiStop,   stop);
+					dJointSetAMotorParam(link->aMotor, dParamVel,      0);
+					dJointSetAMotorParam(link->aMotor, dParamFMax,     fmax);
+					dJointSetAMotorParam(link->aMotor, dParamBounce,   0);
+					dJointSetAMotorParam(link->aMotor, dParamStopCFM,  cfm);
+					dJointSetAMotorParam(link->aMotor, dParamStopERP,  erp);
 
 					//Hinge joint for test
 					/*leg[i][j].joint = dJointCreateHinge(world, 0);
@@ -180,46 +197,38 @@ void setupSkeleton ()
 					dJointSetHingeAxis(leg[i][j].joint, 0, 1, 0);*/
 					break;
 				case 1: //Create a hinge joint and connect to the previous link
-					leg[i][j].joint = dJointCreateHinge(world, 0);
-					dJointAttach(leg[i][j].joint, leg[i][j].body, leg[i][j-1].body);
-					dJointSetHingeAnchor(leg[i][j].joint, leg[i][j].cX, leg[i][j].cY, leg[i][j].cZ + leg[i][j].totalLength/2.0);
-					dJointSetHingeAxis(leg[i][j].joint, 0, 1, 0);
+					link->joint = dJointCreateHinge(world, 0);
+					dJointAttach(link->joint, link->body, link->GetParent()->body);
+					dJointSetHingeAnchor(link->joint, link->cX, link->cY, link->cZ + link->totalLength/2.0);
+					dJointSetHingeAxis(link->joint, 0, 1, 0);
 					break;
 				case 2: //Create a universal joint and connect to the previous link
-					leg[i][j].joint = dJointCreateUniversal(world, 0);
-					dJointAttach(leg[i][j].joint, leg[i][j].body, leg[i][j-1].body);
-					dJointSetUniversalAnchor(leg[i][j].joint, leg[i][j].cX, leg[i][j].cY, leg[i][j].cZ + leg[i][j].totalLength/2.0);
-					dJointSetUniversalAxis1(leg[i][j].joint, 0, 1, 0);
-					dJointSetUniversalAxis2(leg[i][j].joint, 0, 0, 1);
+					link->joint = dJointCreateUniversal(world, 0);
+					dJointAttach(link->joint, link->body, link->GetParent()->body);
+					dJointSetUniversalAnchor(link->joint, link->cX, link->cY, link->cZ + link->totalLength/2.0);
+					dJointSetUniversalAxis1(link->joint, 0, 1, 0);
+					dJointSetUniversalAxis2(link->joint, 0, 0, 1);
 					break;
 				default:
 					break;
 			}
 
 			//Create the joint Controller
-			leg[i][j].PD = new Controller(50, 5);
+			link->PD = new Controller(50, 5);
+			parent = link->GetChild();
 		}
 
 	}
 
 	skeleton = new AbstractSkeleton();
-	LegFrame* shoulder = new LegFrame();
-	LegFrame* hip = new LegFrame();
-	for(int i = 0; i < 2; ++i)
-	{
-		for(int j = 0; j < 3; ++j)
-		{
-			hip->leg[i][j] = &leg[i][j];
-		}
-	}
-
-	for(int i = 2; i < LEG_NUM; ++i)
-	{
-		for(int j = 0; j < 3; ++j)
-		{
-			shoulder->leg[i-2][j] = &leg[i][j];
-		}
-	}
+	IKChain* FR = new IKChain(root->GetChild(2), root->GetChild(2)->GetChild()->GetChild(), 2);
+	IKChain* FL = new IKChain(root->GetChild(3), root->GetChild(3)->GetChild()->GetChild(), 2);
+	LegFrame* shoulder = new LegFrame(FL, FR);
+	IKChain* RR = new IKChain(root->GetChild(0), root->GetChild(0)->GetChild()->GetChild(), 2);
+	IKChain* RL = new IKChain(root->GetChild(1), root->GetChild(1)->GetChild()->GetChild(), 2);
+	LegFrame* hip = new LegFrame(RL, RR);
+	
+	skeleton->setSkeletonRoot(root);	
 
 	skeleton->setLegFrames(shoulder, hip);
 
@@ -229,29 +238,35 @@ void drawSkeleton ()
 {
 	//draw the torso
 	dsSetColor(1.3, 1.3, 1.3);
-	dsDrawCapsule(dBodyGetPosition(torso.body), dBodyGetRotation(torso.body), torso.length, torso.radius);
+	dsDrawCapsule(dBodyGetPosition(root->body), dBodyGetRotation(root->body), root->length, root->radius);
 
 	//draw links
 	LegFrame* drawFrame;
+	Link* parent;
+	Link* link;
 	for(int legFrame = 0; legFrame < 2; ++legFrame)
 	{
 		drawFrame = skeleton->getLegFrame(legFrame);
 		for(int i = 0; i < 2; ++i)
 		{
+			parent = i == 0? drawFrame->getLeftRoot(): drawFrame->getRightRoot();
 			for (int j = 0; j < LINK_NUM; ++j)
 			{
+				link = parent;
 				if(j == LINK_NUM-1)
 				{
-					dReal dim[3] = {(*drawFrame->leg[i][j]).radius*2, (*drawFrame->leg[i][j]).radius*2, (*drawFrame->leg[i][j]).length};
-					dsDrawBox(dBodyGetPosition((*drawFrame->leg[i][j]).body), dBodyGetRotation((*drawFrame->leg[i][j]).body), dim);
+					dReal dim[3] = {link->radius*2, link->radius*2, link->length};
+					dsDrawBox(dBodyGetPosition(link->body), dBodyGetRotation(link->body), dim);
 				}
 				else
-					dsDrawCapsule(dBodyGetPosition((*drawFrame->leg[i][j]).body), dBodyGetRotation((*drawFrame->leg[i][j]).body), (*drawFrame->leg[i][j]).length, (*drawFrame->leg[i][j]).radius);
+					dsDrawCapsule(dBodyGetPosition(link->body), dBodyGetRotation(link->body), link->length, link->radius);
+				
+				parent = parent->GetChild();
 			}
 		}
 	}
 
-	dsDrawCapsule(dBodyGetPosition(head.body), dBodyGetRotation(head.body), head.length, head.radius);
+	dsDrawCapsule(dBodyGetPosition(root->GetChild(4)->body), dBodyGetRotation(root->GetChild(4)->body), root->GetChild(4)->length, root->GetChild(4)->radius);
 }
 
 void createTrajectories()
@@ -317,152 +332,20 @@ void createTrajectories()
 
 void calculateTargetAngles()
 {
-	if(step < 3)
-	{
-	//Test
-		LegFrame* legframe;
-		for(int x = 0; x < 2; ++x)
-		{
-			legframe = skeleton->getLegFrame(x);
-			for(int i = 0; i < 2; ++i)
-			{
-				for(int j = 0; j < JOINT_NUM; ++j)
-				{
-					/*glm::vec3 point = trajectories->getPointOnCurve(i, x);
-					dReal pos[3] = {point.x, point.y, point.z};
-		
-					dsDrawSphereD(pos, dBodyGetRotation(leg[i][0].body), 0.01);*/
-					float angle = 0;
-					legframe->leg[i][j]->tX = 0;
-					legframe->leg[i][j]->tZ = 0;
-					switch(j)
-					{
-						case 0:
-							if( x == 1 && i == 1)
-							{
-								if(step == 0)
-									legframe->leg[i][j]->tY = -60 * M_PI/180.0f;
-								else if(step == 1)
-									legframe->leg[i][j]->tY = 15 * M_PI/180.0f;
-								else if(step == 2)
-									legframe->leg[i][j]->tY = -100 * M_PI/180.0f;
-								legframe->legMode[i] = false; 
-							}else if(x == 0 && i == 0)
-							{
-								if(step == 0)
-									break;
-								if(step == 1)
-									legframe->leg[i][j]->tY = 95 * M_PI/180.0f;
-								else if(step == 2)
-									legframe->leg[i][j]->tY = -15 * M_PI/180.0f;
-								legframe->legMode[i] = false; 
-							}else
-							{
-								legframe->leg[i][j]->tX = 0;
-								legframe->leg[i][j]->tY = 0;
-								legframe->leg[i][j]->tZ = 0;
-
-								legframe->legMode[i] = true;
-							}
-							break;
-						case 1:
-							if( x == 1 && i == 1)
-							{
-								if(step == 0)
-									legframe->leg[i][j]->tY = 230 * M_PI/180.0f;
-								else if(step == 1)
-									legframe->leg[i][j]->tY = 140 * M_PI/180.0f;
-								else if(step == 2)
-									legframe->leg[i][j]->tY = 10 * M_PI/180.0f;
-								legframe->legMode[i] = false; 
-							}else if(x == 0 && i == 0)
-							{
-								if(step == 0)
-									break;
-								if(step == 1)
-									legframe->leg[i][j]->tY = -120 * M_PI/180.0f;
-								else if(step == 2)
-									legframe->leg[i][j]->tY = -25 * M_PI/180.0f;
-
-								legframe->legMode[i] = false; 
-							}else
-							{
-								legframe->leg[i][j]->tX = 0;
-								legframe->leg[i][j]->tY = 0;
-								legframe->leg[i][j]->tZ = 0;
-
-								legframe->legMode[i] = true;
-							}
-							break;
-						case 2:
-							break;
-						default:
-							break;
-					}
-
-
-					//legframe->leg[i][j]->tX = 0;
-					//legframe->leg[i][j]->tY = //trajectories->getLegPitch(i, phase);
-					//legframe->leg[i][j]->tZ = 0;
-
-					//if(legframe->leg[i][j]->tY != 0)
-					//	legframe->legMode[0] = true;
-
-					//printf("%i angle is %f\n", step, legframe->leg[i][j]->tY);
-				}
-			}
-		}
-		++step;
-	}
-	//For standing
-	//dReal aX = 0;
-	//dReal aY = 0;
-	//dReal aZ = 0;
-	//for(int i = 0; i < LEG_NUM; ++i)
-	//{
-	//	for(int j = 0; j < LINK_NUM; ++j)
-	//	{
-	//		if( j == 1)
-	//		{
-	//			if(i > 1) //Rear legs
-	//			{
-	//				aY = -0.2;
-	//			}
-	//			else
-	//			{
-	//				aY = 0.2;
-	//			}
-	//		}
-	//		else if( j == 2 )
-	//		{
-	//			if(i > 1)
-	//			{
-	//				aY = 0.1;
-	//			}
-	//			else
-	//			{
-	//				aY = -0.1;
-	//			}
-	//		}
-	//		else
-	//			aY = 0;
-
-	//		leg[i][j].tX = aX;
-	//		leg[i][j].tY = aY;
-	//		leg[i][j].tZ = aZ;
-	//	}
-	//}
+	
 }
 
 void ComputePDTorques()
 {
 	dReal maxF = 100.0;
 	LegFrame* legframe;
+	Link* link;
 	for(int x = 0; x < 2; ++x)
 	{
 		legframe = skeleton->getLegFrame(x);
 		for (int i = 0; i < 2; ++i)
 		{
+			link = i == 0? legframe->getLeftRoot() : legframe->getRightRoot();
 			for (int j = 0; j < LINK_NUM; ++j)
 			{
 				glm::vec3 angles = glm::vec3(0, 0, 0);
@@ -472,91 +355,61 @@ void ComputePDTorques()
 				switch(j)
 				{
 					case 0: //ball-and-socket joint
-						angles[2] = dJointGetAMotorAngle(legframe->leg[i][j]->aMotor, 0);
-						angles[0] = dJointGetAMotorAngle(legframe->leg[i][j]->aMotor, 1);
-						angles[1] = dJointGetAMotorAngle(legframe->leg[i][j]->aMotor, 2);
+						angles[2] = dJointGetAMotorAngle(link->aMotor, 0);
+						angles[0] = dJointGetAMotorAngle(link->aMotor, 1);
+						angles[1] = dJointGetAMotorAngle(link->aMotor, 2);
 
-						omega[2] = dJointGetAMotorAngleRate(legframe->leg[i][j]->aMotor, 0);
-						omega[0] = dJointGetAMotorAngleRate(legframe->leg[i][j]->aMotor, 1);
-						omega[1] = dJointGetAMotorAngleRate(legframe->leg[i][j]->aMotor, 2);
+						omega[2] = dJointGetAMotorAngleRate(link->aMotor, 0);
+						omega[0] = dJointGetAMotorAngleRate(link->aMotor, 1);
+						omega[1] = dJointGetAMotorAngleRate(link->aMotor, 2);
 
-						delta = glm::vec3(legframe->leg[i][j]->tX - angles[0], legframe->leg[i][j]->tY - angles[1], legframe->leg[i][j]->tZ - angles[2]);
-						result = legframe->leg[i][j]->PD->calculateControllerOutput(delta, omega);
+						delta = glm::vec3(link->tX - angles[0], link->tY - angles[1], link->tZ - angles[2]);
+						result = link->PD->calculateControllerOutput(delta, omega);
 						//printf("motor torques %d %d %d\n", result.x, result.y, result.z);
 						legFrameTorques[x][i][j][0] = result.z;
 						legFrameTorques[x][i][j][1] = result.x;
 						legFrameTorques[x][i][j][2] = result.y;
-						//dJointAddAMotorTorques(legframe->leg[i][j]->aMotor, result.z, result.x, result.y);
+						//dJointAddAMotorTorques(link->aMotor, result.z, result.x, result.y);
 					
 						break;
 					case 1: //hinge joint
-						angles[1] = dJointGetHingeAngle(legframe->leg[i][j]->joint);
-						omega[1] = dJointGetHingeAngleRate(legframe->leg[i][j]->joint);
+						angles[1] = dJointGetHingeAngle(link->joint);
+						omega[1] = dJointGetHingeAngleRate(link->joint);
 						omega[2] = 0;
-						delta = glm::vec3(legframe->leg[i][j]->tX - angles[0], legframe->leg[i][j]->tY - angles[1], legframe->leg[i][j]->tZ - angles[2]);
+						delta = glm::vec3(link->tX - angles[0], link->tY - angles[1], link->tZ - angles[2]);
 						//printf("omega %d %d %d\n", omega[0], omega[1], omega[2]);
-						result = legframe->leg[i][j]->PD->calculateControllerOutput(delta, omega);
+						result = link->PD->calculateControllerOutput(delta, omega);
 						legFrameTorques[x][i][j][0] = 0;
 						legFrameTorques[x][i][j][1] = result.y;
 						legFrameTorques[x][i][j][2] = 0;
 						//printf("result %d %d %d\n", result.x, result.y, result.z);
-						//dJointAddHingeTorque(legframe->leg[i][j]->joint, result[1]);
-						//dJointSetHingeParam(legframe->leg[i][j]->joint, dParamFMax, maxF);
+						//dJointAddHingeTorque(link->joint, result[1]);
+						//dJointSetHingeParam(link->joint, dParamFMax, maxF);
 						break;
 					case 2: //universal joint
-						angles[1] = dJointGetUniversalAngle1(legframe->leg[i][j]->joint);
-						angles[2] = dJointGetUniversalAngle2(legframe->leg[i][j]->joint);
-						omega[1] = dJointGetUniversalAngle1Rate(legframe->leg[i][j]->joint);
-						omega[2] = dJointGetUniversalAngle2Rate(legframe->leg[i][j]->joint);
-						delta = glm::vec3(legframe->leg[i][j]->tX - angles[0], legframe->leg[i][j]->tY - angles[1], legframe->leg[i][j]->tZ - angles[2]);
-						result = legframe->leg[i][j]->PD->calculateControllerOutput(delta, omega);
+						angles[1] = dJointGetUniversalAngle1(link->joint);
+						angles[2] = dJointGetUniversalAngle2(link->joint);
+						omega[1] = dJointGetUniversalAngle1Rate(link->joint);
+						omega[2] = dJointGetUniversalAngle2Rate(link->joint);
+						delta = glm::vec3(link->tX - angles[0], link->tY - angles[1], link->tZ - angles[2]);
+						result = link->PD->calculateControllerOutput(delta, omega);
 						legFrameTorques[x][i][j][0] = 0;
 						legFrameTorques[x][i][j][1] = result.y;
 						legFrameTorques[x][i][j][2] = result.z;
-						//dJointAddUniversalTorques(legframe->leg[i][j]->joint, result[1], 0);
-						//dJointSetUniversalParam(legframe->leg[i][j]->joint, dParamFMax, maxF);
-						//dJointSetUniversalParam(legframe->leg[i][j]->joint, dParamFMax1, maxF);
+						//dJointAddUniversalTorques(link->joint, result[1], 0);
+						//dJointSetUniversalParam(link->joint, dParamFMax, maxF);
+						//dJointSetUniversalParam(link->joint, dParamFMax1, maxF);
 						break;
 				}
 			}
+			link = link->GetChild();
 		}
 	}
 }
 
 void ApplyLegFrameTorques()
 {
-	LegFrame* legframe;
-	for(int x = 0; x < 2; ++x)
-	{
-		legframe = skeleton->getLegFrame(x);
-		for(int i = 0; i < 2; ++i)
-		{
-			for(int j = 0; j < JOINT_NUM; ++j)
-			{
-				switch(j)
-				{
-					case 0:
-						if(!legframe->legMode[i])
-							dJointAddAMotorTorques(legframe->leg[i][j]->aMotor, legFrameTorques[x][i][j][0], legFrameTorques[x][i][j][1], legFrameTorques[x][i][j][2]);
-						else
-							if(i == 0)
-								dJointAddAMotorTorques(legframe->leg[i][j]->aMotor, -0.5f*legFrameTorques[x][1][j][0], -0.5f*legFrameTorques[x][1][j][1], -0.5f*legFrameTorques[x][1][j][2]);
-							else
-								dJointAddAMotorTorques(legframe->leg[i][j]->aMotor, -0.5f*legFrameTorques[x][0][j][0], -0.5f*legFrameTorques[x][0][j][1], -0.5f*legFrameTorques[x][0][j][2]);
-						break;
-					case 1:
-						dJointAddHingeTorque(legframe->leg[i][j]->joint, legFrameTorques[x][i][j][1]);
-						break;
-					case 2:
-						dJointAddUniversalTorques(legframe->leg[i][j]->joint, legFrameTorques[x][i][j][1], legFrameTorques[x][i][j][2]);
-						break;
-					default:
-						break;
-				}
-
-			}
-		}
-	}
+	
 }
 
 void setupWorld ()
