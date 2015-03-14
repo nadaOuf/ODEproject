@@ -26,7 +26,7 @@ IKChain::~IKChain()
 //2D CCD rotating around Y-axis
 void IKChain::SolveIK(glm::vec3 goal) const
 {
-	if(glm::distance2(goal, end_->GetGlobalPosition()) < EPSILON)
+	if(glm::distance2(goal, end_->GetJointGlobalPosition()) < EPSILON)
 		return;
 	
 	for(int i = 0; i < MAX_ITER; i++)
@@ -35,9 +35,9 @@ void IKChain::SolveIK(glm::vec3 goal) const
 
 		for(int j = 0; j < link_; j++)
 		{
-			glm::vec3 err = goal - end_->GetGlobalPosition();
-			glm::vec3 r = end_->GetGlobalPosition() -
-				rotating_joint->GetGlobalPosition();
+			glm::vec3 err = goal - end_->GetJointGlobalPosition();
+			glm::vec3 r = end_->GetJointGlobalPosition() -
+				rotating_joint->GetJointGlobalPosition();
 			
 			glm::vec3 r_cross_err = glm::cross(r, err);
 			float r_cross_err_length = glm::length(r_cross_err);
@@ -64,7 +64,7 @@ void IKChain::SolveIK(glm::vec3 goal) const
 				rotating_joint->RotateBy(rotAxis, angle);
 
 				//if less than threshold -> CCD done
-				if(glm::distance2(goal, end_->GetGlobalPosition()) < EPSILON)
+				if(glm::distance2(goal, end_->GetJointGlobalPosition()) < EPSILON)
 					return; 
 			}
 

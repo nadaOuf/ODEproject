@@ -21,19 +21,30 @@ class Link
 
 		// TODO
 		glm::mat4 GetTransformMatrix();
-		glm::vec3 GetGlobalPosition();
+		glm::vec3 GetJointGlobalPosition();
+		glm::vec3 GetCMGlobalPosition();
 
 		void AddTorque(glm::vec3 torque);
+		glm::vec3 getTorque()
+		{
+			return torque_;
+		};
+
+		void clearTorque()
+		{
+			torque_ = glm::vec3();
+		};
 
 		dBodyID body;
 		dGeomID geom;
 		dJointID joint;
 		dJointID aMotor;
+		enum JOINT_TYPE  {BALL, HINGE, UNIVERSAL};
 		dReal mass, radius, length, totalLength;
 		dReal cX, cY, cZ; //C.M. for the link
 		dReal tX, tY, tZ; //Target angles for the joint
 		Controller* PD;
-		int jointID;
+		int jointType;
 
 	private:
 		Link* parent_;
