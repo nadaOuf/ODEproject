@@ -17,9 +17,6 @@ class AbstractSkeleton
 	void setSkeletonRoot(Link* root);
 	Link* getSkeletonRoot();
 
-	void setSkeletonRoot(Link* root);
-	Link* getSkeletonRoot();
-
 	enum LEGFRAME{SHOULDER, HIP};
 
 private:
