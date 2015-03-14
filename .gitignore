@@ -48,6 +48,7 @@ Temporary Items
 *.sdf
 *.suo
 *.exe
+<<<<<<< HEAD
 ODE tutorial/ODE tutorial.sdf
 *.ipch
 ODE tutorial/ODE tutorial.sdf
@@ -60,3 +61,14 @@ ODE tutorial/ODE tutorial.sdf
 *.cache
 *.idb
 *.pdb
+=======
+*.pdb
+*.exe
+*.ilk
+*.sdf
+*.suo
+*.obj
+*.tlog
+*.pdb
+*.idb
+>>>>>>> origin/master

@@ -20,7 +20,7 @@ Link::~Link(void)
 int Link::AddChild(Link* child)
 {
 	children_.push_back(child);
-	return children_.size() - 1;
+	return children_.size();
 }
 
 Link* Link::GetChild(int index)
