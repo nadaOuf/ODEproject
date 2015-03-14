@@ -42,45 +42,40 @@ void setupSkeleton ()
 	dReal linkMass = 1;
 
 	root  = new Link(NULL);
-	Link torso = *root;
 	//Set up the torso
-	torso.body = dBodyCreate(world);
-	torso.radius = 0.2;
-	torso.length = 0.5;
-	torso.mass = 22;
+	root->body = dBodyCreate(world);
+	root->radius = 0.2;
+	root->length = 0.5;
+	root->mass = 22;
 	
 	dMassSetZero(&mass);
-	dMassSetCapsuleTotal(&mass, torso.mass, 3, torso.radius, torso.length);
-	dBodySetMass(torso.body, &mass);
+	dMassSetCapsuleTotal(&mass, root->mass, 3, root->radius, root->length);
+	dBodySetMass(root->body, &mass);
 
-	torso.cX = 0;
-	torso.cY = 0;
-	torso.cZ = height;
-	dBodySetPosition(torso.body, torso.cX, torso.cY, torso.cZ);
+	root->cX = 0;
+	root->cY = 0;
+	root->cZ = height;
+	dBodySetPosition(root->body, root->cX, root->cY, root->cZ);
 	dMatrix3 Rotation;
 	dRFromAxisAndAngle(Rotation, 0, 1, 0, M_PI/2);
-	dBodySetRotation(torso.body, Rotation);	
+	dBodySetRotation(root->body, Rotation);	
 	
-	torso.geom = dCreateCapsule(space, torso.radius, torso.length);
-	dGeomSetBody(torso.geom, torso.body);
-
-	torso.AddChild(new Link(root));
-	torso.AddChild(new Link(root));
-	torso.AddChild(new Link(root));
-	torso.AddChild(new Link(root));
+	root->geom = dCreateCapsule(space, root->radius, root->length);
+	dGeomSetBody(root->geom, root->body);
 
 	//Set up the links
 	int altX = -1;
 	int altY = -1;
 	Link* parent;
+	Link* link;
 	for (int i = 0; i < LEG_NUM; ++i)
 	{
-		parent = torso.GetChild(i);
-		dReal x = torso.length/2.0;
-		dReal y = torso.radius;
+		parent = root;
+		dReal x = root->length/2.0;
+		dReal y = root->radius;
 		for (int j = 0; j < LINK_NUM; ++j)
 		{
-			Link* link = new Link(parent);
+			link = new Link(parent);
 			link->body = dBodyCreate(world);
 			link->radius = linkRadius;
 			if(j == LINK_NUM - 1)
@@ -111,7 +106,7 @@ void setupSkeleton ()
 			//Setting the position of the link
 			link->cX = x*altX;
 			link->cY = y*altY;
-			link->cZ = height - link->totalLength/2.0 - (j > 0? link->totalLength *j : 0);
+			link->cZ = height - link->totalLength/2.0 - (j > 0? link->GetParent()->totalLength *j : 0);
 			
 			dBodySetPosition(link->body, link->cX, link->cY, link->cZ);	
 			parent = link;
@@ -125,43 +120,41 @@ void setupSkeleton ()
 			altY = -1;
 	}
 
-	torso.AddChild(new Link(root));
-	Link head = torso.GetChild(4);
+	Link* head = new Link(root);
 	//Add the head
-	head.body = dBodyCreate(world);
-	head.length = 0.3;
-	head.radius = 0.1;
-	head.mass = 1;
-	head.cX = torso.length/2.0 + head.length/2.0;
-	head.cY = 0;
-	head.cZ = torso.cZ + torso.radius*1.5;
+	head->body = dBodyCreate(world);
+	head->length = 0.3;
+	head->radius = 0.1;
+	head->mass = 1;
+	head->cX = root->length/2.0 + head->length/2.0;
+	head->cY = 0;
+	head->cZ = root->cZ + root->radius*1.5;
 
 	dMassSetZero(&mass);
-	dMassSetCapsuleTotal(&mass, head.mass, 3, head.radius, head.length);
-	dBodySetMass(head.body, &mass);
+	dMassSetCapsuleTotal(&mass, head->mass, 3, head->radius, head->length);
+	dBodySetMass(head->body, &mass);
 
-	dBodySetPosition(head.body, head.cX, head.cY, head.cZ);
-	dBodySetRotation(head.body, Rotation);
+	dBodySetPosition(head->body, head->cX, head->cY, head->cZ);
+	dBodySetRotation(head->body, Rotation);
 
-	head.geom = dCreateCapsule(space, head.radius, head.length);
-	dGeomSetBody(head.geom, head.body);
+	head->geom = dCreateCapsule(space, head->radius, head->length);
+	dGeomSetBody(head->geom, head->body);
 
 	//Connect the joints
 	//Attach the head and torso
-	head.joint = dJointCreateHinge(world, 0);
-	dJointAttach(head.joint, head.body, torso.body);
-	dJointSetHingeAnchor(head.joint, head.cX, head.cY, head.cZ);
-	dJointSetHingeAxis(head.joint, 0,1,0);
+	head->joint = dJointCreateHinge(world, 0);
+	dJointAttach(head->joint, head->body, root->body);
+	dJointSetHingeAnchor(head->joint, head->cX, head->cY, head->cZ);
+	dJointSetHingeAxis(head->joint, 0,1,0);
 
 	dReal stop = 3.14f / 2.0f;
 	dReal fmax = 10.0f;
 	dReal cfm = 1e-5;
 	dReal erp = 0.8f;
-	Link* link;
 	//Attach the link joints
 	for(int i = 0; i < LEG_NUM; ++i)
 	{
-		parent = torso.GetChild(i);
+		parent = root->GetChild(i);
 		for(int j = 0; j < JOINT_NUM; ++j)
 		{
 			link = parent;
@@ -190,11 +183,6 @@ void setupSkeleton ()
 					dJointSetAMotorParam(link->aMotor, dParamStopCFM,  cfm);
 					dJointSetAMotorParam(link->aMotor, dParamStopERP,  erp);
 
-					//Hinge joint for test
-					/*leg[i][j].joint = dJointCreateHinge(world, 0);
-					dJointAttach(leg[i][j].joint, leg[i][j].body, torso.body);
-					dJointSetHingeAnchor(leg[i][j].joint, leg[i][j].cX, leg[i][j].cY, leg[i][j].cZ + leg[i][j].totalLength/2.0);
-					dJointSetHingeAxis(leg[i][j].joint, 0, 1, 0);*/
 					break;
 				case 1: //Create a hinge joint and connect to the previous link
 					link->joint = dJointCreateHinge(world, 0);
@@ -214,7 +202,7 @@ void setupSkeleton ()
 			}
 
 			//Create the joint Controller
-			link->PD = new Controller(50, 5);
+			link->PD = new Controller(40, 5);
 			parent = link->GetChild();
 		}
 
@@ -401,8 +389,9 @@ void ComputePDTorques()
 						//dJointSetUniversalParam(link->joint, dParamFMax1, maxF);
 						break;
 				}
+				link = link->GetChild();
 			}
-			link = link->GetChild();
+			
 		}
 	}
 }
@@ -451,8 +440,8 @@ void nearCollide (void *data, dGeomID o1, dGeomID o2)
 		{
 			contact[i].surface.mode = dContactSoftERP | dContactSoftCFM;
 			contact[i].surface.mu   = dInfinity; //2.0;
-			contact[i].surface.soft_erp = 0;
-			contact[i].surface.soft_cfm = 0;//1e-5;
+			contact[i].surface.soft_erp = 0.8;
+			contact[i].surface.soft_cfm = 1e-5;
 			dJointID c = dJointCreateContact(world,contactgroup,&contact[i]);
 			dJointAttach(c,b1,b2);
 		}
@@ -464,11 +453,11 @@ void simLoop (int pause)
 {
 
 	//Calculate Torques
-	calculateTargetAngles();
-	ComputePDTorques();
+	//calculateTargetAngles();
+	//ComputePDTorques();
 
 	//Apply torques to legframes
-	ApplyLegFrameTorques();
+	//ApplyLegFrameTorques();
 
 	//world step
 	dSpaceCollide(space, 0, &nearCollide);

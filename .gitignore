@@ -48,3 +48,12 @@ Temporary Items
 *.sdf
 *.suo
 *.exe
+*.pdb
+*.exe
+*.ilk
+*.sdf
+*.suo
+*.obj
+*.tlog
+*.pdb
+*.idb
