@@ -172,15 +172,15 @@ void setupSkeleton()
 					//For a ball-in-socket joint create a AMotor to control it
 					link->aMotor = dJointCreateAMotor(world, 0);
 					dJointAttach(link->aMotor, link->body, link->GetParent()->body);
-					dJointSetAMotorMode(link->aMotor, dAMotorEuler);
+					dJointSetAMotorMode(link->aMotor, dAMotorUser);
 					dJointSetAMotorNumAxes(link->aMotor, 3);
 					dJointSetAMotorAxis(link->aMotor, 2, 1,  0, 0, 1);
 					dJointSetAMotorAxis(link->aMotor, 0, 1,  1, 0, 0);
 					dJointSetAMotorAxis(link->aMotor, 1, 1,  0, 1, 0);
 
-					dJointSetAMotorAngle(link->aMotor,0, 0);
-					dJointSetAMotorAngle(link->aMotor,1, 0);
-					dJointSetAMotorAngle(link->aMotor,2, 0);
+					//dJointSetAMotorAngle(link->aMotor,0, 0);
+					//dJointSetAMotorAngle(link->aMotor,1, 0);
+					//dJointSetAMotorAngle(link->aMotor,2, 0);
 
 					dJointSetAMotorParam(link->aMotor, dParamLoStop,  -stop);
 					dJointSetAMotorParam(link->aMotor, dParamHiStop,   stop);
@@ -343,6 +343,7 @@ void ComputePDTorques()
 	dReal maxF = 100.0;
 	LegFrame* legframe;
 	Link* link;
+	int altY = -1;
 	for(int x = 0; x < 2; ++x)
 	{
 		legframe = skeleton->getLegFrame(x);
@@ -377,13 +378,18 @@ void ComputePDTorques()
 						angles[1] = dJointGetHingeAngle(link->joint);
 						omega[1] = dJointGetHingeAngleRate(link->joint);
 						omega[2] = 0;
+						if(i == 1 && j == 1)
+						{
+							link->tY = -0.5*altY;
+							altY += 2;
+						}
 						delta = glm::vec3(link->tX - angles[0], link->tY - angles[1], link->tZ - angles[2]);
 						//printf("omega %d %d %d\n", omega[0], omega[1], omega[2]);
 						result = link->PD->calculateControllerOutput(delta, omega);
 						link->AddTorque(result);
 						//printf("result %d %d %d\n", result.x, result.y, result.z);
-						dJointAddHingeTorque(link->joint, result[1]);
-						dJointSetHingeParam(link->joint, dParamFMax, maxF);
+						//dJointAddHingeTorque(link->joint, result[1]);
+						//dJointSetHingeParam(link->joint, dParamFMax, maxF);
 						break;
 					case 2: //universal joint
 						angles[1] = dJointGetUniversalAngle1(link->joint);
@@ -393,9 +399,9 @@ void ComputePDTorques()
 						delta = glm::vec3(link->tX - angles[0], link->tY - angles[1], link->tZ - angles[2]);
 						result = link->PD->calculateControllerOutput(delta, omega);
 						link->AddTorque(result);
-						dJointAddUniversalTorques(link->joint, result[1], 0);
-						dJointSetUniversalParam(link->joint, dParamFMax, maxF);
-						dJointSetUniversalParam(link->joint, dParamFMax1, maxF);
+						//dJointAddUniversalTorques(link->joint, result[1], 0);
+						//dJointSetUniversalParam(link->joint, dParamFMax, maxF);
+						//dJointSetUniversalParam(link->joint, dParamFMax1, maxF);
 						break;
 				}
 				link = link->GetChild();
@@ -434,6 +440,7 @@ void ApplyLegFrameTorques()
 		for(int j = 0; j < JOINT_NUM; ++j)
 		{
 			torque = link->getTorque();
+			printf("%i %i torque %d %d %d\n", i, j, torque.x, torque.y, torque.z);
 			switch(j)
 			{
 				case 0:
@@ -462,8 +469,8 @@ void setupWorld ()
 	ground = dCreatePlane(space, 0, 0, 1, 0);
 
 	dWorldSetGravity(world, 0, 0, -9.8);
-	dWorldSetCFM(world, 0);
-	dWorldSetERP(world, 0);
+	dWorldSetCFM(world, 1e-5);
+	dWorldSetERP(world, 0.8);
 }
 
 //Start function that will be called by the draw functions
@@ -508,22 +515,17 @@ void simLoop (int pause)
 	//Calculate Torques
 	//calculateTargetAngles();
 	ComputePDTorques();
-	//computeTorquesFromVirtualForces();
+	computeTorquesFromVirtualForces();
 
 	//Apply torques to legframes
-	//ApplyLegFrameTorques();
+	ApplyLegFrameTorques();
 
 	//world step
 	dSpaceCollide(space, 0, &nearCollide);
-	dWorldStep(world, 0.1);
+	dWorldStep(world, 0.0001);
 	dJointGroupEmpty(contactgroup);
 
 	drawSkeleton();
-
-	phase += 1;
-
-	if(phase >= T)
-		phase -= T;
 }
 
 void initDraw ()
