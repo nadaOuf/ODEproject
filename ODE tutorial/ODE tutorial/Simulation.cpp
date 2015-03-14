@@ -22,7 +22,7 @@ dJointGroupID contactgroup;
 //Functions for drawing
 dsFunctions fn;
 
-MyLink leg[LEG_NUM][LINK_NUM], torso, head;
+Link leg[LEG_NUM][LINK_NUM], torso, head;
 
 dReal THETA[LEG_NUM][LINK_NUM] = {{0},{0},{0},{0}};
 

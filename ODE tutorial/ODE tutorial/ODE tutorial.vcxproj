@@ -24,7 +24,6 @@
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="Gait.cpp" />
     <ClCompile Include="IKChain.cpp" />
-    <ClCompile Include="LegFrame.cpp" />
     <ClCompile Include="Link.cpp" />
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="Spline.cpp" />

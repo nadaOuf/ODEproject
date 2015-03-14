@@ -2,6 +2,8 @@
 
 #include "IKChain.h"
 
+enum LEG_MODE { stance = 0, swing };
+
 class LegFrame
 {
 	public:
@@ -11,8 +13,8 @@ class LegFrame
 		IKChain* left_leg;
 		IKChain* right_leg;
 
-		bool left_leg_mode;
-		bool right_leg_mode;
+		LEG_MODE left_leg_mode;
+		LEG_MODE right_leg_mode;
 
 };
 

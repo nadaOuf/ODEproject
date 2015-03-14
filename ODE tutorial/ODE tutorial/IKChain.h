@@ -4,7 +4,7 @@
 #include <exception>
 
 #define MAX_ITER 50
-#define EPSILON 0.01
+#define EPSILON 0.0001
 
 /*
 	LOOK -	IKChain contains "Joint" whose angles will 

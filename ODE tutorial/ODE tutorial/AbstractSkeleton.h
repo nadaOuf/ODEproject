@@ -3,11 +3,7 @@
 
 #include "headers.h"
 #include "Controller.h"
-
-typedef struct {
-	MyLink* leg[2][3]; // 0 -- left, 1 -- right
-	bool legMode[2]; // true -- stance, false swing
-} MLegFrame;
+#include "LegFrame.h"
 
 class AbstractSkeleton
 {

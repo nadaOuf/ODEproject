@@ -19,7 +19,8 @@ class Link
 		void RotateBy(glm::vec3 axis, float angleRad);
 
 		// TODO
-
+		glm::mat4 GetTransformMatrix();
+		glm::vec3 GetGlobalPosition();
 
 		dBodyID bodyID;
 		dGeomID geomID;
