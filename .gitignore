@@ -43,6 +43,7 @@ Temporary Items
 .apdisk
 
 *.pch
+*.ipch
 *.sln
 *.sdf
 *.suo
