@@ -4,22 +4,10 @@
 #include "headers.h"
 #include "Controller.h"
 
-typedef struct
-{
-	dBodyID body;
-	dGeomID geom;
-	dJointID joint;
-	dJointID aMotor;
-	dReal mass, radius, length, totalLength;
-	dReal cX, cY, cZ;
-	Controller* PD;
-	dReal tX, tY, tZ; //Target angles for the joint
-}MyLink;
-
 typedef struct {
 	MyLink* leg[2][3]; // 0 -- left, 1 -- right
 	bool legMode[2]; // true -- stance, false swing
-} LegFrame;
+} MLegFrame;
 
 class AbstractSkeleton
 {

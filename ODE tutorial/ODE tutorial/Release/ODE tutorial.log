@@ -1,0 +1,25 @@
+﻿Build started 3/14/2015 11:48:50 AM.
+     1>Project "C:\ODEproject\ODE tutorial\ODE tutorial\ODE tutorial.vcxproj" on node 2 (build target(s)).
+     1>PrepareForBuild:
+         Creating directory "C:\ODEproject\ODE tutorial\Release\".
+       InitializeBuildStatus:
+         Creating "Release\ODE tutorial.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt AbstractSkeleton.cpp Controller.cpp FileReader.cpp Gait.cpp Simulation.cpp Spline.cpp Trajectories.cpp
+         AbstractSkeleton.cpp
+     1>c:\odeproject\ode tutorial\ode tutorial\headers.h(4): fatal error C1083: Cannot open include file: 'ode\ode.h': No such file or directory
+         Controller.cpp
+     1>c:\odeproject\ode tutorial\ode tutorial\headers.h(4): fatal error C1083: Cannot open include file: 'ode\ode.h': No such file or directory
+         FileReader.cpp
+         Gait.cpp
+         Simulation.cpp
+     1>c:\odeproject\ode tutorial\ode tutorial\headers.h(4): fatal error C1083: Cannot open include file: 'ode\ode.h': No such file or directory
+         Spline.cpp
+     1>c:\odeproject\ode tutorial\ode tutorial\headers.h(4): fatal error C1083: Cannot open include file: 'ode\ode.h': No such file or directory
+         Trajectories.cpp
+     1>c:\odeproject\ode tutorial\ode tutorial\headers.h(4): fatal error C1083: Cannot open include file: 'ode\ode.h': No such file or directory
+     1>Done Building Project "C:\ODEproject\ODE tutorial\ODE tutorial\ODE tutorial.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.96

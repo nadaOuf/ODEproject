@@ -23,6 +23,9 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="Gait.cpp" />
+    <ClCompile Include="IKChain.cpp" />
+    <ClCompile Include="LegFrame.cpp" />
+    <ClCompile Include="Link.cpp" />
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Trajectories.cpp" />
@@ -33,6 +36,9 @@
     <ClInclude Include="Gait.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="headers.h" />
+    <ClInclude Include="IKChain.h" />
+    <ClInclude Include="LegFrame.h" />
+    <ClInclude Include="Link.h" />
     <ClInclude Include="Spline.h" />
     <ClInclude Include="Trajectories.h" />
   </ItemGroup>

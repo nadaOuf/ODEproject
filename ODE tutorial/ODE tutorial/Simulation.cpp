@@ -408,7 +408,7 @@ void calculateTargetAngles()
 					//if(legframe->leg[i][j]->tY != 0)
 					//	legframe->legMode[0] = true;
 
-					printf("%i angle is %f\n", step, legframe->leg[i][j]->tY);
+					//printf("%i angle is %f\n", step, legframe->leg[i][j]->tY);
 				}
 			}
 		}
