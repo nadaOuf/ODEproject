@@ -23,8 +23,8 @@ void VirtualForces::GravityCompensation(Link* start, Link* end)
 		if(currentLink == NULL)
 			throw new runtime_error("GravityCompensation ERROR : chaining is not correct.");
 
-		glm::vec3 tmpV = pGlobal - currentLink->GetJointGlobalPosition();
-		glm::vec3 torque = glm::cross(10.0f * tmpV, gravity);
+		glm::vec3 tmpV = pGlobal - currentLink->GetJointGlobalPosition_Current();
+		glm::vec3 torque = glm::cross(10.0f* tmpV, gravity);
 
 		currentLink->AddTorque(-torque);
 		currentLink = currentLink->GetParent();

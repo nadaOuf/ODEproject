@@ -25,14 +25,10 @@ dsFunctions fn;
 
 Link* root;
 
-dReal THETA[LEG_NUM][LINK_NUM] = {{0},{0},{0},{0}};
-
 float T = 7;
-float phase;
-dReal legFrameTorques[2][2][3][3]; //2 leg frames each has 2 legs each is composed of 3 joints with 3 DOFs
+float phase = 0;
 AbstractSkeleton* skeleton;
-Trajectories* trajectories;
-int step = 0;
+Trajectories* trajectories = new Trajectories();
 
 VirtualForces* virtualForces = new VirtualForces();
 
@@ -217,7 +213,7 @@ void setupSkeleton()
 			}
 
 			//Create the joint Controller
-			link->PD = new Controller(40, 5);
+			link->PD = new Controller(10, 0.5);
 			parent = link->GetChild();
 		}
 
@@ -227,9 +223,13 @@ void setupSkeleton()
 	IKChain* FR = new IKChain(root->GetChild(2), root->GetChild(2)->GetChild()->GetChild(), 2);
 	IKChain* FL = new IKChain(root->GetChild(3), root->GetChild(3)->GetChild()->GetChild(), 2);
 	LegFrame* shoulder = new LegFrame(FL, FR);
+	shoulder->setLeftLegID(trajectories->FL);
+	shoulder->setRightLegID(trajectories->FR);
 	IKChain* RR = new IKChain(root->GetChild(0), root->GetChild(0)->GetChild()->GetChild(), 2);
 	IKChain* RL = new IKChain(root->GetChild(1), root->GetChild(1)->GetChild()->GetChild(), 2);
 	LegFrame* hip = new LegFrame(RL, RR);
+	hip->setLeftLegID(trajectories->RL);
+	hip->setRightLegID(trajectories->RR);
 	
 	skeleton->setSkeletonRoot(root);	
 
@@ -240,8 +240,8 @@ void setupSkeleton()
 void drawSkeleton ()
 {
 	//draw the torso
-	dsSetColor(1.3, 1.3, 1.3);
-	dsDrawCapsule(dBodyGetPosition(root->body), dBodyGetRotation(root->body), root->length, root->radius);
+	dsSetColor(1.3f, 1.3f, 1.3f);
+	dsDrawCapsuleD(dBodyGetPosition(root->body), dBodyGetRotation(root->body), root->length, root->radius);
 
 	//draw links
 	LegFrame* drawFrame;
@@ -259,71 +259,75 @@ void drawSkeleton ()
 				if(j == LINK_NUM-1)
 				{
 					dReal dim[3] = {link->radius*2, link->radius*2, link->length};
-					dsDrawBox(dBodyGetPosition(link->body), dBodyGetRotation(link->body), dim);
+					dsDrawBoxD(dBodyGetPosition(link->body), dBodyGetRotation(link->body), dim);
 				}
 				else
-					dsDrawCapsule(dBodyGetPosition(link->body), dBodyGetRotation(link->body), link->length, link->radius);
+					dsDrawCapsuleD(dBodyGetPosition(link->body), dBodyGetRotation(link->body), link->length, link->radius);
 				
 				parent = parent->GetChild();
 			}
 		}
 	}
 
-	dsDrawCapsule(dBodyGetPosition(root->GetChild(4)->body), dBodyGetRotation(root->GetChild(4)->body), root->GetChild(4)->length, root->GetChild(4)->radius);
+	dsDrawCapsuleD(dBodyGetPosition(root->GetChild(4)->body), dBodyGetRotation(root->GetChild(4)->body), root->GetChild(4)->length, root->GetChild(4)->radius);
 }
 
 void createTrajectories()
 {
-	trajectories = new Trajectories();
+	glm::vec3 pos = glm::vec3();
 	for(int i = 0; i < LEG_NUM; ++i)
 	{
 		vector<glm::vec3> walkPoints;
 		float stepSize = 0.4;
-		float height = 0.2;
+		float height = 0.2; 
 		switch(i)
 		{
 			case 0: //RL
-				walkPoints.push_back(glm::vec3(0, 0, 0));
-				walkPoints.push_back(glm::vec3(0, 0, height/2.0f));
-				walkPoints.push_back(glm::vec3(stepSize/4.0f, 0, height*3.0f/4.0f));
-				walkPoints.push_back(glm::vec3(stepSize/2.0f, 0, height));
-				walkPoints.push_back(glm::vec3(3.0f*stepSize/4.0f, 0, height*3.0f/4.0f));
-				walkPoints.push_back(glm::vec3(stepSize, 0, height/2.0f));
-				walkPoints.push_back(glm::vec3(stepSize, 0, 0));
-				walkPoints.push_back(glm::vec3(stepSize, 0, 0));
+				pos = skeleton->getLegFrame(0)->getLeftLegEndJointPosition();
+				walkPoints.push_back(glm::vec3(0, 0, 0) + pos);
+				walkPoints.push_back(glm::vec3(0, 0, height/2.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize/4.0f, 0, height*3.0f/4.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize/2.0f, 0, height) + pos);
+				walkPoints.push_back(glm::vec3(3.0f*stepSize/4.0f, 0, height*3.0f/4.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize, 0, height/2.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize, 0, 0) + pos);
+				walkPoints.push_back(glm::vec3(stepSize, 0, 0) + pos);
 				trajectories->generateLegTrajectory(trajectories->RL, walkPoints);
 				break;
 			case 1: //RR
-				walkPoints.push_back(glm::vec3(0, 0, 0));
-				walkPoints.push_back(glm::vec3(0, 0, 0));
-				walkPoints.push_back(glm::vec3(0, 0, 0));
-				walkPoints.push_back(glm::vec3(0, 0, height/2.0f));
-				walkPoints.push_back(glm::vec3(stepSize/4.0f, 0, height*3.0f/4.0f));
-				walkPoints.push_back(glm::vec3(stepSize/2.0f, 0, height));
-				walkPoints.push_back(glm::vec3(3.0f*stepSize/4.0f, 0, height*3.0f/4.0f));
-				walkPoints.push_back(glm::vec3(stepSize, 0, height/2.0f));
+				pos = skeleton->getLegFrame(0)->getRightLegEndJointPosition();
+				walkPoints.push_back(glm::vec3(0, 0, 0) + pos);
+				walkPoints.push_back(glm::vec3(0, 0, 0) + pos);
+				walkPoints.push_back(glm::vec3(0, 0, 0) + pos);
+				walkPoints.push_back(glm::vec3(0, 0, height/2.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize/4.0f, 0, height*3.0f/4.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize/2.0f, 0, height) + pos);
+				walkPoints.push_back(glm::vec3(3.0f*stepSize/4.0f, 0, height*3.0f/4.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize, 0, height/2.0f) + pos);
 				trajectories->generateLegTrajectory(trajectories->RR, walkPoints);
 				break;
 			case 2: //FL
-				walkPoints.push_back(glm::vec3(0, 0, 0));
-				walkPoints.push_back(glm::vec3(0, 0, 0));
-				walkPoints.push_back(glm::vec3(0, 0, height/2.0f));
-				walkPoints.push_back(glm::vec3(stepSize/4.0f, 0, height*3.0f/4.0f));
-				walkPoints.push_back(glm::vec3(stepSize/2.0f, 0, height));
-				walkPoints.push_back(glm::vec3(3.0f*stepSize/4.0f, 0, height*3.0f/4.0f));
-				walkPoints.push_back(glm::vec3(stepSize, 0, height/2.0f));
-				walkPoints.push_back(glm::vec3(stepSize, 0, 0));
+				pos = skeleton->getLegFrame(1)->getLeftLegEndJointPosition();
+				walkPoints.push_back(glm::vec3(0, 0, 0) + pos);
+				walkPoints.push_back(glm::vec3(0, 0, 0) + pos);
+				walkPoints.push_back(glm::vec3(0, 0, height/2.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize/4.0f, 0, height*3.0f/4.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize/2.0f, 0, height) + pos);
+				walkPoints.push_back(glm::vec3(3.0f*stepSize/4.0f, 0, height*3.0f/4.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize, 0, height/2.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize, 0, 0) + pos);
 				trajectories->generateLegTrajectory(trajectories->FL, walkPoints);
 				break;
 			case 3: //FR
-				walkPoints.push_back(glm::vec3(0, 0, height/2.0f));
-				walkPoints.push_back(glm::vec3(stepSize/4.0f, 0, height*3.0f/4.0f));
-				walkPoints.push_back(glm::vec3(stepSize/2.0f, 0, height));
-				walkPoints.push_back(glm::vec3(3.0f*stepSize/4.0f, 0, height*3.0f/4.0f));
-				walkPoints.push_back(glm::vec3(stepSize, 0, height/2.0f));
-				walkPoints.push_back(glm::vec3(stepSize, 0, 0));
-				walkPoints.push_back(glm::vec3(stepSize, 0, 0));				
-				walkPoints.push_back(glm::vec3(stepSize, 0, 0));
+				pos = skeleton->getLegFrame(1)->getRightLegEndJointPosition();
+				walkPoints.push_back(glm::vec3(0, 0, height/2.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize/4.0f, 0, height*3.0f/4.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize/2.0f, 0, height) + pos);
+				walkPoints.push_back(glm::vec3(3.0f*stepSize/4.0f, 0, height*3.0f/4.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize, 0, height/2.0f) + pos);
+				walkPoints.push_back(glm::vec3(stepSize, 0, 0) + pos);
+				walkPoints.push_back(glm::vec3(stepSize, 0, 0) + pos);				
+				walkPoints.push_back(glm::vec3(stepSize, 0, 0) + pos);
 				trajectories->generateLegTrajectory(trajectories->FR, walkPoints);
 				break;
 			default:
@@ -335,7 +339,23 @@ void createTrajectories()
 
 void calculateTargetAngles()
 {
-	
+	LegFrame* legframe;
+	Link* link;
+	glm::vec3 goalPosition;
+	for(int x = 0; x < 1; ++x) //x == 0 then rear legs and x == 1 front legs
+	{
+		legframe = skeleton->getLegFrame(x);
+
+		//get target position from feet trajectories
+		goalPosition = legframe->getLeftLegEndJointPosition() + glm::vec3(0, 0, 0.2);//trajectories->getPointOnCurve(legframe->getLeftLegID(), phase);
+
+		legframe->solveIKForLeftLeg(goalPosition);
+
+		//goalPosition = trajectories->getPointOnCurve(legframe->getRightLegID(), phase);
+
+		//legframe->solveIKForRightLeg(goalPosition);
+	}
+
 }
 
 void ComputePDTorques()
@@ -367,7 +387,7 @@ void ComputePDTorques()
 						omega[1] = dJointGetAMotorAngleRate(link->aMotor, 1);
 						omega[2] = dJointGetAMotorAngleRate(link->aMotor, 2);
 
-						delta = glm::vec3(link->tX - angles[0], link->tY - angles[1], link->tZ - angles[2]);
+						delta = glm::vec3(link->tX() - angles[0], link->tY() - angles[1], link->tZ() - angles[2]);
 						result = link->PD->calculateControllerOutput(delta, omega);
 						//printf("motor torques %d %d %d\n", result.x, result.y, result.z);
 						link->AddTorque(result);
@@ -378,12 +398,13 @@ void ComputePDTorques()
 						angles[1] = dJointGetHingeAngle(link->joint);
 						omega[1] = dJointGetHingeAngleRate(link->joint);
 						omega[2] = 0;
-						if(i == 1 && j == 1)
+						//for testing
+						/*if(i == 1 && j == 1)
 						{
 							link->tY = -0.5*altY;
-							altY += 2;
-						}
-						delta = glm::vec3(link->tX - angles[0], link->tY - angles[1], link->tZ - angles[2]);
+							altY += 10;
+						}*/
+						delta = glm::vec3(link->tX() - angles[0], link->tY() - angles[1], link->tZ() - angles[2]);
 						//printf("omega %d %d %d\n", omega[0], omega[1], omega[2]);
 						result = link->PD->calculateControllerOutput(delta, omega);
 						link->AddTorque(result);
@@ -396,7 +417,7 @@ void ComputePDTorques()
 						angles[2] = dJointGetUniversalAngle2(link->joint);
 						omega[1] = dJointGetUniversalAngle1Rate(link->joint);
 						omega[2] = dJointGetUniversalAngle2Rate(link->joint);
-						delta = glm::vec3(link->tX - angles[0], link->tY - angles[1], link->tZ - angles[2]);
+						delta = glm::vec3(link->tX() - angles[0], link->tY() - angles[1], link->tZ() - angles[2]);
 						result = link->PD->calculateControllerOutput(delta, omega);
 						link->AddTorque(result);
 						//dJointAddUniversalTorques(link->joint, result[1], 0);
@@ -440,7 +461,7 @@ void ApplyLegFrameTorques()
 		for(int j = 0; j < JOINT_NUM; ++j)
 		{
 			torque = link->getTorque();
-			printf("%i %i torque %d %d %d\n", i, j, torque.x, torque.y, torque.z);
+			//printf("%i %i torque %d %d %d\n", i, j, torque.x, torque.y, torque.z);
 			switch(j)
 			{
 				case 0:
@@ -522,10 +543,15 @@ void simLoop (int pause)
 
 	//world step
 	dSpaceCollide(space, 0, &nearCollide);
-	dWorldStep(world, 0.0001);
+	dWorldStep(world, 0.001);
 	dJointGroupEmpty(contactgroup);
 
 	drawSkeleton();
+
+	phase += 0.1;
+
+	if(phase >= T)
+		phase -= T;
 }
 
 void initDraw ()
@@ -545,9 +571,11 @@ int main (int argc, char **argv)
 	dInitODE ();
 
 	setupWorld ();
+	
 	setupSkeleton ();
-
 	createTrajectories();
+
+	calculateTargetAngles();
 
 	dsSimulationLoop (argc, argv, 800, 480, &fn);
 

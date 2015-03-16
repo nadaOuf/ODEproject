@@ -1,6 +1,8 @@
 #ifndef _HEADERS_H
 #define _HEADERS_H
 
+#define GLM_FORCE_RADIANS
+
 #include <ode\ode.h>
 #include <drawstuff\drawstuff.h>
 

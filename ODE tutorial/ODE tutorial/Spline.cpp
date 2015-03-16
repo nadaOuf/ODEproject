@@ -34,7 +34,7 @@ glm::vec3 Spline::getPointOnSpline(float t)
 	glm::vec3 b20 = Lerp(b10, b12, correct_t);
 	glm::vec3 b21 = Lerp(b12, b23, correct_t);
 
-	return Lerp(b20, b21, correct_t);
+	return Lerp(b20, b21, correct_t) - b0;
 }
 
 void Spline::reSetPoints()
@@ -96,7 +96,7 @@ void Spline::generateSpline()
 	glm::vec3 pi(0, 0, 0), pi_1(0, 0, 0), pi_2(0, 0, 0), pi_3(0, 0, 0);
 	//Calculate the control points
 	//This code only works if the number of points is >= 2
-	for( int i = 0; i < m_vInterpolationPoints.size() - 1; ++i)
+	for(unsigned int i = 0; i < m_vInterpolationPoints.size() - 1; ++i)
 	{
 		pi = m_vInterpolationPoints[i];
 		pi_1 = (i == 0 ? m_vStartPoint : m_vInterpolationPoints[i-1]);

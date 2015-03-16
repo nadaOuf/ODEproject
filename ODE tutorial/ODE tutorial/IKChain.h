@@ -22,6 +22,18 @@ class IKChain
 			return root_;
 		};
 
+		glm::vec3 getEndJointPosition_Current()
+		{
+			return end_->GetJointGlobalPosition_Current();
+		};
+
+		glm::vec3 GetPosition_inRootFrame(glm::vec3 position)
+		{
+			return glm::vec3();
+		}
+
+		glm::vec3 GetTransformMat_inRootFrame(glm::vec3 transformMat);
+
 		void SolveIK(glm::vec3 goal) const;
 
 	private:

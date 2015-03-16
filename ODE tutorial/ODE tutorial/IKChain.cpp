@@ -26,18 +26,33 @@ IKChain::~IKChain()
 //2D CCD rotating around Y-axis
 void IKChain::SolveIK(glm::vec3 goal) const
 {
-	if(glm::distance2(goal, end_->GetJointGlobalPosition()) < EPSILON)
+	if(glm::distance2(goal, end_->GetJointGlobalPosition_Current()) < EPSILON)
 		return;
+
+	Link* rotating_joint = end_;
+
+	//set up!
+	std::vector<glm::vec3> jointPos;
+	while(true)
+	{
+		rotating_joint->ResetTargetRotation();
+		if(rotating_joint->GetParent() == NULL)
+			break;
+		rotating_joint = rotating_joint->GetParent();
+	}
 	
+	//every calculation must be performed in the root's frame.
 	for(int i = 0; i < MAX_ITER; i++)
 	{
-		Link* rotating_joint = end_->GetParent();
+		rotating_joint = end_->GetParent();
 
 		for(int j = 0; j < link_; j++)
 		{
-			glm::vec3 err = goal - end_->GetJointGlobalPosition();
-			glm::vec3 r = end_->GetJointGlobalPosition() -
-				rotating_joint->GetJointGlobalPosition();
+			glm::vec3 tmp = end_->GetJointGlobalPosition_Target();
+
+			glm::vec3 err = goal - end_->GetJointGlobalPosition_Target();
+			glm::vec3 r = end_->GetJointGlobalPosition_Target() -
+				rotating_joint->GetJointGlobalPosition_Target();
 			
 			glm::vec3 r_cross_err = glm::cross(r, err);
 			float r_cross_err_length = glm::length(r_cross_err);
@@ -59,12 +74,17 @@ void IKChain::SolveIK(glm::vec3 goal) const
 					(the angle is too large that tan angle != angle) 
 					uncomment the line below.*/
 				angle = atan(angle); 
+				glm::mat4 transformation = rotating_joint->GetTransformMatrix_Target();
+				//float det = glm::determinant(transformation);
+				//glm::mat4 rot_inverse = glm::inverse(transformation);
+				//rotAxis = glm::vec3( rot_inverse * glm::vec4(rotAxis, 0));
 
-				rotAxis = glm::vec3(glm::inverse(rotating_joint->GetTransformMatrix()) * glm::vec4(rotAxis, 0));
+				//if(rotAxis.y < 0) rotAxis = glm::vec3(0,-1,0);
+				//else rotAxis = glm::vec3(0,1,0);
 				rotating_joint->RotateBy(rotAxis, angle);
-
+				
 				//if less than threshold -> CCD done
-				if(glm::distance2(goal, end_->GetJointGlobalPosition()) < EPSILON)
+				if(glm::distance2(goal, end_->GetJointGlobalPosition_Target()) < EPSILON)
 					return; 
 			}
 
